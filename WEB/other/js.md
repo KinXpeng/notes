@@ -346,18 +346,8 @@
   }
   ```
 
-- 1
+- 111
 
-  ```js
   
-  let arr = [
-    {flag:true},
-    {flag:true},
-    {flag:false},
-    {flag:true},
-  ]
-  let isExist = arr.find(item=>item.flag==false)
-  if(isExist) return false
-  ```
-
+  
   
