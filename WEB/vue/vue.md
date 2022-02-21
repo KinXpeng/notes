@@ -464,7 +464,7 @@ getQueryString(name){
 
 ```vue
 <!--
-  author:李昆鹏
+  author:KinXpeng
   date:2020-5-20 09:24:00
   **** 使用案例
   <tree-select

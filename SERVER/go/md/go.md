@@ -149,3 +149,45 @@
   ```
 
 - 1
+
+### 常用方法的封装
+
+- 文件读写
+
+  ```go
+  package main
+  
+  import (
+  	"fmt"
+  	"os"
+  	"bufio"
+  	"io"
+  )
+  
+  func main() {
+  	srcFile := "./111.txt"
+  	dstFile := "./test/222.txt"
+  	CopyFile(srcFile, dstFile)
+  }
+  
+  func CopyFile(srcFileName string, dstFileName string) (written int64,err error) {
+  	srcFile,err := os.Open(srcFileName)
+  	if err != nil {
+  		fmt.Println(err)
+  	}
+  	defer srcFile.Close()
+  	reader := bufio.NewReader(srcFile)
+  	dstFile,errDst := os.OpenFile(dstFileName, os.O_WRONLY | os.O_CREATE, 0666)
+  	if errDst != nil {
+  		fmt.Println(errDst)
+  		return
+  	}
+  	defer dstFile.Close()
+  	writer := bufio.NewWriter(dstFile)
+  	return io.Copy(writer,reader)
+  }
+  ```
+
+  
+
+- 2
