@@ -346,6 +346,30 @@
   }
   ```
 
+- 笛卡尔积算法
+
+  ```js
+  calcDescartes(array) {
+    if (array.length < 2) return array[0] || [];
+    return array.reduce((total, currentValue) => {
+      let res = [];
+      total.forEach((t) => {
+        currentValue.forEach((cv) => {
+          if (t instanceof Array) {
+            // 或者使用 Array.isArray(t)
+            res.push([...t, cv]);
+          } else {
+            res.push([t, cv]);
+          }
+        });
+      });
+      return res;
+    });
+  }
+  ```
+  
+  
+  
 - 111
 
   
