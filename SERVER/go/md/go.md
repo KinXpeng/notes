@@ -184,7 +184,7 @@
   	}
   	defer dstFile.Close()
   	writer := bufio.NewWriter(dstFile)
-  	return io.Copy(writer,reader)
+  	return io.Copy(writer,reader)  
   }
   ```
 
