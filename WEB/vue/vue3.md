@@ -94,7 +94,7 @@ export default Mock;
 import './mock'
 ```
 
-#### 3.123
+#### 3.日期禁用
 
 ```js
 // 去掉日期选择右上角下一月被禁用
@@ -106,6 +106,31 @@ import './mock'
         nextYear.classList.remove("is-disabled");
         nextYear.removeAttribute("disabled");
       }
+```
+
+### 4.vue3中jsx语法的ui组件插槽的写法
+
+```jsx
+<Search v-model={state.searchValue} placeholder="输入车牌号/检查单号进行查询" background="#eee" left-icon="">
+  {{
+     "right-icon":(()=>
+        <span className={styles.search_btn} onClick={handleSearch}>搜索</span>
+     )
+  }}
+</Search>
+```
+
+### 5.css Modules中样式穿透的写法
+
+```scss
+// 使用global进行样式穿透
+:global(.van-icon-arrow-left) {
+  padding: 10px 0;
+  font-size: 16px;
+  &:hover {
+    background-color: #ddd;
+  }
+}
 ```
 
 
