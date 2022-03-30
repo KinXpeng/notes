@@ -111,6 +111,7 @@ import './mock'
 ### 4.vue3中jsx语法的ui组件插槽的写法
 
 ```jsx
+// 第一种写法
 <Search v-model={state.searchValue} placeholder="输入车牌号/检查单号进行查询" background="#eee" left-icon="">
   {{
      "right-icon":(()=>
@@ -118,6 +119,11 @@ import './mock'
      )
   }}
 </Search>
+
+// 第二种写法
+<Radio name="2"
+   v-slots={{icon:()=><img style="height:14px" src="xxxx"/>}}>单选框 2
+</Radio>
 ```
 
 ### 5.css Modules中样式穿透的写法
