@@ -1,0 +1,31 @@
+{
+  "baseFontSize": 16,
+  "theme": "obsidian",
+  "cssTheme": "Blue Topaz",
+  "translucency": false,
+  "enabledCssSnippets": [
+    "stylish-blockquotes",
+    "subtler-folding-gutter-arrows",
+    "tag-pills",
+    "autofading-ui",
+    "smaller-scrollbar",
+    "nicer-checkboxes",
+    "realistic-highlight",
+    "notation-colour-blocks",
+    "better-bullet-points-in-edit-mode",
+    "bigger-link-popup-preview",
+    "bullet-point-relationship-lines",
+    "center-images",
+    "checkbox",
+    "clutter-free-formatting",
+    "clutter-free-headings",
+    "collapsing-sidebar",
+    "custom-icons-for-frontmatter-tags",
+    "custom-icons-for-specific-folders",
+    "enlarge-image-on-hover",
+    "hyphenation-and-justification",
+    "image-cards",
+    "inline-block-embeds",
+    "media-grid"
+  ]
+}

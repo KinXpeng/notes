@@ -1,0 +1,10 @@
+{
+  "legacyEditor": false,
+  "livePreview": true,
+  "promptDelete": true,
+  "newFileLocation": "current",
+  "showFrontmatter": false,
+  "showLineNumber": false,
+  "alwaysUpdateLinks": false,
+  "showUnsupportedFiles": true
+}

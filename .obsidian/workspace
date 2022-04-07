@@ -1,0 +1,115 @@
+{
+  "main": {
+    "id": "0895223ff9331d86",
+    "type": "split",
+    "children": [
+      {
+        "id": "39de624da51314c8",
+        "type": "leaf",
+        "state": {
+          "type": "empty",
+          "state": {}
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "e007e11cd4d8dd60",
+    "type": "split",
+    "children": [
+      {
+        "id": "448e9f73e1531b12",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "12adec52173c5f17",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "4507196d26226909",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b00d2107d6313e60",
+    "type": "split",
+    "children": [
+      {
+        "id": "509f310c9a44de04",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "675f081ea574997b",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "eb6ead48e06dd676",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "e21038c3dc9957bb",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "39de624da51314c8",
+  "lastOpenFiles": [
+    "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
+    "Docs/备忘.md",
+    "SERVER/go/md/leetcode.md",
+    "SERVER/go/md/Gin框架.md",
+    "WEB/react/react.md",
+    "未命名.md",
+    "WEB/react/React课程笔记.pdf"
+  ]
+}
