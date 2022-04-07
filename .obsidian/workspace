@@ -4,11 +4,15 @@
     "type": "split",
     "children": [
       {
-        "id": "63edc86bd67b2f5c",
+        "id": "44f7e2ad9b2664a1",
         "type": "leaf",
         "state": {
-          "type": "empty",
-          "state": {}
+          "type": "markdown",
+          "state": {
+            "file": "WEB/other/js.md",
+            "mode": "source",
+            "source": false
+          }
         }
       }
     ],
@@ -66,6 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "WEB/other/js.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -92,7 +97,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "WEB/other/js.md"
+              }
             }
           }
         ]
@@ -102,17 +109,17 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "63edc86bd67b2f5c",
+  "active": "44f7e2ad9b2664a1",
   "lastOpenFiles": [
+    "WEB/other/js.md",
+    "WEB/other/regex.md",
+    "WEB/other/ts.md",
+    "WEB/sum/03.HTML && CSS.md",
+    "BLOG/备忘.md",
     "WEB/react/React课程笔记.pdf",
     "Docs/备忘.md",
     "2022-04-07.md",
     "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
-    "SERVER/mysql.md",
-    "WEB/sum/08.React.md",
-    "Docs/未命名.md",
-    "SERVER/go/md/leetcode.md",
-    "SERVER/go/md/Gin框架.md",
-    "WEB/react/react.md"
+    "SERVER/mysql.md"
   ]
 }

@@ -368,28 +368,27 @@
   }
   ```
   
-  
-  
-- 111
-
-  
-  
-
-#### 正则表达式
-
-- 匹配时间
+- 上传图片（base64编码）
 
   ```js
-  // 格式示例 [12:13]
-  let reg1 = /^\[(([1-9])|([0-1][0-9])|([1-2][0-3])):([0-5][0-9])\]$/;
-  // 格式示例 [0-9]
-  let reg2 = /^\[(0|([1-9]{1,}))-([0-9]{1,})\]$/;
-  // 格式示例 [0001-0003]
-  let reg3 = /^\[([0-9]{4})-([0-9]{4})\]$/;
-  
-  let reg4 = /\[(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))-(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\]/;
+  // 选择上传图片
+  const handleSelectFile = () => {
+    const input = document.createElement("input"); // 创建input
+    input.type = "file"; 
+    input.accept = "image/*"; // 上传限制类型
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        state.fileList.push({
+          name: file.name,
+          url: e.target.result,
+        });
+      };
+    };
+    input.click();
+  };
   ```
 
   
-
-- 111
