@@ -23,6 +23,28 @@
 tsc index.ts
 ```
 
+##### ts基本配置
+
+- 生成ts配置文件
+
+  ```typescript
+  tsc --init  // 初始化tsconfig.json文件
+  ```
+
+- 实时编译成js文件
+
+  ```typescript
+  tsc --watch 
+  ```
+
+- ts文件没有错误时才可编译
+
+  ```typescript
+  tsc --noEmitOnError
+  ```
+
+- 1
+
 ##### 变量声明
 
 - 定义声明类型

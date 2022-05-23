@@ -468,5 +468,11 @@ $bus.on('singleTab',data=>{ // 使用on监听
     },
     ```
 
-- 12
+### React 18(reate-react-app搭建)
+- build 打包部署后，资源文件报404
+	```json
+	// package.json 增加如下配置
+	"homepage": "./",
+	```
+- 。。。
 

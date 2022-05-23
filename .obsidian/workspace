@@ -4,12 +4,12 @@
     "type": "split",
     "children": [
       {
-        "id": "44f7e2ad9b2664a1",
+        "id": "7756023cf11001d0",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "WEB/other/js.md",
+            "file": "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
             "mode": "source",
             "source": false
           }
@@ -70,7 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "WEB/other/js.md",
+                "file": "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -98,7 +98,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "WEB/other/js.md"
+                "file": "WEB/react/react-pc-doc/1.基础文档/react-基础.md"
               }
             }
           }
@@ -109,17 +109,17 @@
     "width": 300,
     "collapsed": true
   },
-  "active": "44f7e2ad9b2664a1",
+  "active": "7756023cf11001d0",
   "lastOpenFiles": [
+    "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
+    "WEB/react/react.md",
+    "SERVER/mysql.md",
     "WEB/other/js.md",
     "WEB/other/regex.md",
     "WEB/other/ts.md",
     "WEB/sum/03.HTML && CSS.md",
     "BLOG/备忘.md",
     "WEB/react/React课程笔记.pdf",
-    "Docs/备忘.md",
-    "2022-04-07.md",
-    "WEB/react/react-pc-doc/1.基础文档/react-基础.md",
-    "SERVER/mysql.md"
+    "Docs/备忘.md"
   ]
 }

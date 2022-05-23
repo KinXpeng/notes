@@ -391,4 +391,59 @@
   };
   ```
 
+
+- 打开原生应用
+
+  ```js
+  <a href="weixin://">打开微信</a>
+  <a href="alipays://">打开支付宝</a>
+  <a href="alipays://platformapi/startapp?saId=10000007">打开支付宝的扫一扫功能</a>
+  <a href="alipays://platformapi/startapp?appId=60000002">打开支付宝的蚂蚁森林</a>
+  /*
+       行为(应用的某个功能/页面)
+              |
+  scheme://[path][?query]
+     |               |
+  应用标识       功能需要的参数
+  */
+  ```
+
+- 禁止浏览器的默认行为
+
+  ```css
+  // 禁止长按图片保存
+  img {
+    -webkit-touch-callout: none;
+    pointer-events: none; // 像微信浏览器还是无法禁止，加上这行样式即可
+  }
   
+  // 禁止长按选择文字
+  div {
+    -webkit-user-select: none;
+  }
+  
+  // 禁止长按呼出菜单
+  div {
+    -webkit-touch-callout: none;
+  }
+  ```
+
+- 滑动不顺畅，粘手
+
+  ```css
+  div {
+    -webkit-overflow-scrolling: touch;
+  }
+  ```
+
+- 屏幕旋转为横屏时，字体大小会变
+
+  ```css
+  * {
+    -webkit-text-size-adjust: 100%;
+  }
+  ```
+
+  
+
+- 11
