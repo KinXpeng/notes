@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 单例模式
+      class Car {
+        constructor(name) {
+          this.name = name;
+        }
+        drive() {
+          console.log('启动');
+        }
+      }
+
+      // var benchi = new Car('奔驰');
+      // var baoma = new Car('宝马');
+      // benchi.drive();
+      // baoma.drive();
+      // console.log(benchi);
+      // console.log(baoma);
+
+      Car.createInstance = (function () {
+        let instance;
+        return function (name) {
+          if (!instance) {
+            instance = new Car(name);
+          }
+          return instance;
+        };
+      })();
+
+      var benchi = Car.createInstance('奔驰');
+      var baoma = Car.createInstance('宝马');
+
+      console.log(benchi);
+      console.log(baoma);
+
+      // 工厂模式
+      function createCar(name, color) {
+        var obj = {};
+        obj.name = name;
+        obj.color = color;
+        return obj;
+      }
+      var luhu = createCar('路虎', '灰色');
+      var aodi = createCar('奥迪', '黑色');
+      console.log(luhu, aodi);
+    </script>
+  </body>
+</html>

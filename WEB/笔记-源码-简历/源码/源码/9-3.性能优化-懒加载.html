@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>小滴课堂</div>
+    <script>
+      // 定义一个异步的函数，当用户滑动时则不延时
+      const delayMS = (ms) => {
+        const p = new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
+        // 如果用户开始滑动，则取消延期
+        const onTouchPromise = new Promise((resolve) => {
+          const handler = function () {
+            window.removeEventListener('touchstart', handler);
+            resolve();
+          };
+          window.addEventListener('touchstart', handler);
+        });
+        return Promise.race([p, onTouchPromise]);
+      };
+
+      // 引用
+      delayMS(2000).then(() => {
+        console.log(333); // 控制非首屏dom节点的渲染
+      });
+    </script>
+  </body>
+</html>
