@@ -1009,3 +1009,58 @@ getDateStr(date) {
   ```
 
 - 12
+
+#### Element UI中—Message 消息提示每次只弹出1个，不能同时出现2个
+
+- 新建 `/utils/message.js`
+
+  ```js
+  //message.js
+  /**重置message，防止重复点击重复弹出message消息提示 */
+  import { Message } from "element-ui";
+  
+  let messageInstance = null;
+  
+  const resetMessage = options => {
+    if (messageInstance) {
+      messageInstance.close();
+    }
+    Message.closeAll(); //手动关闭所有消息提示实例
+    messageInstance = Message(options);
+    // console.log(Message(options));
+  };
+  
+  ["error", "success", "info", "warning"].forEach(type => {
+    resetMessage[type] = options => {
+      if (typeof options === "string") {
+        options = {
+          message: options
+        };
+      }
+      options.type = type;
+      return resetMessage(options);
+    };
+  });
+  
+  export const message = resetMessage;
+  ```
+
+- `main.js` 中引入，挂载到全局中
+
+  ```js
+  import { message } from "@/utils/message.js";
+  
+  Vue.use(ElementUI);
+  Vue.prototype.$message = message; // 挂载时在use后面，以便覆盖原有的提示
+  ```
+
+- 使用方法和之前一样
+
+  ```js
+  this.$message({
+    type:'error',
+    message:'提示信息'
+  });
+  ```
+
+  
