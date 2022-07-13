@@ -389,6 +389,22 @@
     };
     input.click();
   };
+  
+  // 另一种canvas方法
+  function getBase64Img(imgUrl, name) {
+    let img = new Image();
+    if (img) {
+      img.onload = function () { // 利用canvas进行转换
+        let canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        let dataURL = canvas.toDataURL(); // 转换好的base64编码
+      };
+      img.src = imgUrl;
+    }
+  }s
   ```
 
 
