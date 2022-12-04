@@ -460,4 +460,15 @@
   }
   ```
 
-- 未完待续。。。
+- vsCode禁止大写PX转换为小写px
+
+  ```css
+  a {
+    /* prettier-ignore */
+    font-size: 16PX;
+  }
+  ```
+
+  
+
+- 111

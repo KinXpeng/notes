@@ -476,3 +476,13 @@ $bus.on('singleTab',data=>{ // 使用on监听
 	```
 - 。。。
 
+#### Taro3中使用view等组件报错
+
+```jsx
+// 在types/global.d.ts
+declare namespace JSX {
+  // @ts-ignore
+  type Element = any;
+}
+```
+
