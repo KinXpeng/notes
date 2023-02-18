@@ -358,4 +358,287 @@
   }
   ```
 
+
+
+
+## go语言基础
+
+### 字符串方法
+
+- 字符串拼接
+
+  ```go
+  package main
+  import (
+  	"strings"
+    "bytes"
+  )
+  func main() {
+    // 第一种
+    name := "111"
+    age := "22"
+    result := strings.Join([]string{name,age},",")
+    fmt.Printf("result: %v\n",result)
+    
+    // 第二种
+    var buffer bytes.Buffer
+    buffer.WriteString("tom")
+    buffer.WriteString("=")
+    buffer.WriteString("20")
+    fmt.Printf("buffer.String():%v\n",buffer.String())
+  }
+  ```
+
+- 字符串的切片
+
+  ```go
+  s := "Hello world"
+  a := 2
+  b := 5
   
+  fmt.Printf("s[a]:%v\n",s[a])
+  fmt.Printf("s[a:b]:%v\n",s[a:b])
+  fmt.Printf("s[a:]:%v\n",s[a:])
+  fmt.Printf("s[:b]:%v\n",s[:b])
+  ```
+
+- 字符串的其他常用
+
+  长度 `len(str)` 
+
+  分割 `strings.Split(str,",")`
+
+  是否包含某个字符串 `strings.Contains(str,"hello")`
+
+  大小写 `strings.ToLower(str) `  `string.ToUpper(str)`
+
+  是否含有前后缀
+
+   `string.HasPrefix("hello")`  `strings.HasSuffix("hello")`
+
+  查找索引 `strings.Index(s,"ll")` `strings.LastIndex(s,"ll")`
+
+- 输出字符
+
+  ![image-20230218165904203](../../../imgs/image-20230218165904203.png)
+
+  ![image-20230218170001558](../../../imgs/image-20230218170001558.png)
+
+- 获取终端输入值
+
+  ```go
+  package main
+  
+  import (
+  	"fmt"
+  )
+  
+  func main() {
+  	var (
+  		name string
+  		age  int
+  	)
+  	fmt.Println("请输入姓名和年龄，用空格分隔：")
+  	fmt.Scan(&name, &age) // 获取终端输入
+  	fmt.Printf("name: %v\n", name)
+  	fmt.Printf("age: %v\n", age)
+  }  
+  ```
+
+### 流程条件语句
+
+- 流程语句
+
+  ```go
+  switch grade {
+    case "A", "D": // case中可有多个值
+    	fmt.Println("A or D")
+    	fallthrough // 可继续执行下一个case
+    case "B":
+    	fmt.Println("B")
+    case "C":
+    	fmt.Println("C")
+    default:
+    	fmt.Println("以上都不是")
+  }
+  
+  // switch后可不加条件，则默认为true
+  switch {
+    case grade == "A":
+      fmt.Println("A")
+    case grade == "B":
+    	fmt.Println("B")
+    default:
+    	fmt.Println("都不是")
+  }
+  ```
+
+- for和for range循环
+
+  ```go
+  ///////// for循环
+  // for循环中可以通过break、goto、return、panic语句强制退出循环。
+  // 常用写法
+  for i := 1; i < 10; i++ {
+    fmt.Printf("i: %v\n", i)
+  }
+  
+  // 第一个条件可写在外边
+  i := 1
+  for ; i < 10; i++ {
+    fmt.Printf("i: %v\n", i)
+  }
+  
+  // 初始条件可省略，放在for循环外边
+  i := 1
+  for i < 10 {
+    fmt.Printf("i: %v\n", i)
+    i++
+  }
+  
+  // 永真循环，类似于while循环
+  for {
+    fmt.Println("一直在执行")
+  }
+  
+  ///////for range循环
+  // 可以遍历数组、切片、字符串、map以及通道（channel）
+  // 1.数组、切片、字符串返回索引和值。
+  // 2.map返回值和值。
+  // 3.通道（channel）只返回通道内的值。
+  
+  // 常用写法
+  var list = [5]int{1, 2, 3, 4, 5} // 数组
+  for i, v := range list {
+    fmt.Printf("v: %v:%v\n", i, v)
+  }
+  
+  // 遍历切片
+  var list = []int{1, 2, 3} // 切片（动态的数组）
+  for _, v := range list { // 省略时用下划线代替
+    fmt.Printf("v: %v\n", v)
+  }
+  
+  // 遍历map
+  m := make(map[string]string, 0) // map[key的类型]value的类型
+  m["name"] = "测试"
+  m["address"] = "北京"
+  for key, value := range m {
+    fmt.Printf("v: %v:%v\n", key, value)
+  }
+  ```
+
+- `break` 可以结束 `for`、`switch`、 `select` 的代码块
+
+  ```go
+  switch grade {
+    case "A", "D": // case中可有多个值
+    	fmt.Println("A or D")
+    	break // 可就此中断switch，下面的fallthrough将不执行
+    	fallthrough 
+    case "B":
+    	fmt.Println("B")
+    case "C":
+    	fmt.Println("C")
+    default:
+    	fmt.Println("以上都不是")
+  }
+  
+  // 跳出到指定位置
+  label: // 定义标签
+  	for i := 1; i < 5; i++ {
+  		fmt.Printf("i: %v\n", i)
+  		if i == 3 {
+  			break label // 跳到标签处
+  		}
+  	}
+  ```
+
+- `continue` 
+
+  ```go
+  for i := 1; i < 5; i++ {
+    if i == 3 {
+      fmt.Printf("i: %v\n", i)
+    } else {
+      continue // 当前循环结束，进行下一次循环
+    }
+  }
+  
+  for i := 1; i < 5; i++ {
+  	label:
+  		for j := 1; j < 6; j++ {
+  			if i == 3 && j == 3 {
+  				continue label // 跳到指定标签，后续不执行
+  			}
+  			fmt.Printf("i,j: %v,%v\n", i, j) // 此处在i j == 3时不执行
+  		}
+  	}
+  ```
+
+- `goto`
+
+  ```go
+  i := 1
+  if i >= 2 {
+    fmt.Printf("i: %v\n", i)
+  } else {
+    goto label // 跳到标签处
+  }
+  label:
+  	fmt.Println("结束了")
+  
+  // 也可以跳出双重循环
+  ```
+
+### 数组
+
+- 基本定义、初始化
+
+  ```go
+  var arr [1]int // [长度]类型
+  
+  // 初始化列表
+  var arr1 = [3]int{1,2,3}
+  var arr2 = [3]string{"1","2"} // 无值时默认为空，int无值默认为0
+  
+  // 省略长度
+  var arr3 = [...]int{1,2,3,4,5}
+  fmt.Printf("len: %v",len(arr3))
+  
+  var arr4 = [...]bool{2:true,5:false}
+  ```
+
+- 修改数组
+
+  ```go
+  var arr = [...]int{1,2,3}
+  arr[0] = 100 // 通过下标进行访问或者修改
+  
+  var arr1 [2]int // 定义好的数组长度不能越界
+  a[0] = 100
+  a[2] = 200
+  
+  // 数组的长度
+  var arr2 = [3]int{1,2,3}
+  fmt.Println(len(arr2))
+  ```
+
+- 数组的遍历
+
+  ```go
+  var arr = [3]int{1, 2, 3}
+  for i := 0; i < len(arr); i++ {
+    fmt.Printf("i: %v\n", arr[i])
+  }
+  
+  // for range的方式遍历
+  var arr1 = [3]int{1, 2, 3}
+  for _, v := range arr1 {
+    fmt.Printf("v: %v\n", v)
+  }
+  ```
+
+  
+
+- 111
