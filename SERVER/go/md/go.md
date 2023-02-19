@@ -639,6 +639,276 @@
   }
   ```
 
+### 切片
+
+- 创建切片
+
+  ```go
+  // 申明切片
+  var identifier []type
+  var arr []int
+  var arr1 []string
+  
+  // 切片是引用类型，可使用make来创建切片
+  var ss = make([]int,2) // 第二个参数为切片的容量
+  ```
+
+- 数组/切片常用
+
+  ```go
+  var s1 = []int{1, 2, 3}
+  fmt.Printf("len(s1): %v\n", len(s1)) // 切片长度
+  fmt.Printf("cap(s1): %v\n", cap(s1)) // 切片容量
+  
+  // 取值 / 数组同样适用
+  var arr = []int{1, 2, 3, 4, 5, 6}
+  var s1 = arr[0:3] // [) 取0-3位 第二位为开区间
+  var s2 = arr[3:] // 取3到最后
+  var s3 = arr[:] // 取所有元素
+  fmt.Printf("s1: %v\n", s1)
+  fmt.Printf("s2: %v\n", s2)
+  fmt.Printf("s3: %v\n", s3)
+  
+  // 切片遍历（也可以通过for range的方式遍历）
+  var arr = []int{1, 2, 3, 4, 5, 6}
+  for i := 0; i < len(arr); i++ {
+    fmt.Printf("arr[%v]: %v\n", i, arr[i])
+  }
+  ```
+
+- 切片操作
+
+  ```go
+  // 切片添加
+  var s1 = []int{}
+  s1 = append(s1, 1)
+  s1 = append(s1, 2)
+  s1 = append(s1, 3)
+  fmt.Printf("s1: %v\n", s1)
+  
+  var s1 = []int{}
+  var s2 = []int{1, 2, 3, 4, 5}
+  s1 = append(s1, s2[3:]...) // 将s2索引为3后的元素添加进s1，其中...表示展开
+  fmt.Printf("s1: %v\n", s1)
+  
+  // 切片删除元素
+  // a = append(a[:index],a[index+1]...) // 删除某个索引
+  var s1 = []int{1, 2, 3, 4, 5}
+  s1 = append(s1[:2], s1[3:]...) // 删除索引为2的元素
+  fmt.Printf("s1: %v\n", s1) // =>>> [1,2,4,5]
+  
+  // 修改
+  var s1 = []int{1, 2, 3, 4, 5}
+  s1[3] = 100 // 传入需要修改的索引
+  fmt.Printf("s1: %v\n", s1)
+  
+  // 查找
+  var s1 = []int{1, 2, 3, 4, 5}
+  var key = 2
+  for i, v := range s1 {
+    if key == v {
+      fmt.Printf("i: %v\n", i) // 找到该值对应的索引
+    }
+  }
+  
+  // 拷贝切片
+  var s1 = []int{1,2,3,4}
+  s2 := s1 // 直接赋值时内存地址一样，修改s2会导致s1也被修改
+  
+  var s1 = []int{1, 2, 3, 4, 5}
+  var s2 = make([]int, 5) // 需要make
+  copy(s2, s1) // 将s1切片复制到s2
+  s2[3] = 100
+  fmt.Printf("s1: %v\n", s1) // =>>> [1,2,3,4,5]
+  fmt.Printf("s2: %v\n", s2) // =>>> [1,2,3,100,5]
+  ```
+
+### map
+
+- 语法格式
+
+  ```go
+  // 创建map
+  var m1 = make(map[string]string)
+  m1["name"] = "测试"
+  m1["address"] = "beijing"
+  fmt.Printf("m1: %v\n", m1)
+  
+  var m1 map[string]string // 声明
+  m1 = make(map[string]string)
+  m1["name"] = "测试"
+  m1["address"] = "beijing"
+  fmt.Printf("m1: %v\n", m1)
+  ```
+
+- 初始化map
+
+  ```go
+  // 创建时可直接初始化
+  var m1 = map[string]string{"name": "测试", "age": "20"}
+  fmt.Printf("m1: %v\n", m1)
+  
+  // 动态赋值
+  m1 := make(map[string]string)
+  m1["name"] = "测试"
+  m1["address"] = "beijing"
+  fmt.Printf("m1: %v\n", m1)
+  ```
+
+- map操作
+
+  ```go
+  // 通过key访问
+  var m1 = map[string]string{"name": "测试", "age": "20"}
+  var key = "name"
+  var value = m1[key]
+  fmt.Printf("value: %v\n", value)
+  
+  // 通过返回值判断
+  var m1 = map[string]string{"name": "测试", "age": "20"}
+  var key = "name"
+  v, ok := m1[key] // 存在时ok为true,不存在为false
+  fmt.Printf("v: %v:%v\n", v, ok) // =>>> v:测试 true
+  ```
+
+- map遍历
+
+  ```go
+  m1 := map[string]string{"name": "测试", "age": "11"}
+  for k := range m1 { // 只获取map的key
+    fmt.Printf("k: %v\n", k)
+  }
+  
+  m1 := map[string]string{"name": "测试", "age": "11"}
+  for k, v := range m1 { // 同时获取key和value
+    fmt.Printf("k-v: %v-%v\n", k, v)
+  }
+  ```
+
+### 函数
+
+- 介绍
+
+  - 普通函数
+  - 匿名函数（没有名称的函数）
+  - 方法（定义在struct上的函数）
+
+- 不允许函数重载，也就是说不允许函数同名
+
+- 函数不能嵌套函数，但可以嵌套匿名函数
+
+- 函数参数
+
+  ```go
+  // 返回值可以有参数，也可以没参数
+  func fn1(a int, b int) (res int) { // 返回值
+    res = a + b
+  	return res
+  }
+  
+  func fn1(){
+    return 2
+  }
+  
+  func fn1(a int, b int) int { // 返回值可以匿名
+  	return a + b
+  }
+  
+  func main() {
+  	result := fn1(1, 2)
+  	fmt.Printf("result: %v\n", result)
+  }
+  
+  // 多个返回值
+  func fn1() (name string, age int) {
+  	return "测试", 12
+  }
+  func main() {
+  	result1, result2 := fn1()
+  	fmt.Printf("result1: %v\n", result1)
+  	fmt.Printf("result2: %v\n", result2)
+  }
+  
+  // map slice interface channel这些类型的底层是指针类型，拷贝传值后可能会影响外部数据结构的值
+  
+  // 可变参数
+  func fn1(args ...int) { // 使用... 
+  	for _, v := range args {
+  		fmt.Printf("v: %v\n", v)
+  	}
+  }
+  func main() {
+  	fn1(1, 2, 3, 4, 5)
+  }
+  
+  // 指定参数 + 可变参数
+  func fn1(name string, age int, args ...int) {
+  	fmt.Printf("name: %v\n", name)
+  	fmt.Printf("age: %v\n", age)
+  	for _, v := range args {
+  		fmt.Printf("v: %v\n", v)
+  	}
+  }
+  func main() {
+  	fn1("测试", 20, 1, 2, 3, 4, 5)
+  }
+  ```
+
+- 可定义函数类型
+
+  ```go
+  // 符合这种类型的函数都可以进行赋值
+  type fun func(int, int) int
+  
+  func fn1(a int, b int) int {
+  	return a + b
+  }
+  func main() {
+  	var f1 fun
+  	f1 = fn1
+  	r := f1(4, 5)
+  	fmt.Printf("r: %v\n", r)
+  }
+  ```
+
+- 高阶函数
+
+  ```go
+  // 函数作为参数
+  func fn1(name string) {
+  	fmt.Printf("name: %v\n", name)
+  }
+  
+  func test(name string, f func(string)) { // 此处函数作为test函数的参数
+  	f(name)
+  }
+  func main() {
+  	test("测试", fn1)
+  }
+  
+  // 返回值为函数
+  func add(a int, b int) int {
+  	return a + b
+  }
+  func plus(a int, b int) int {
+  	return a - b
+  }
+  
+  func test(types string) func(int, int) int {
+  	if types == "-" {
+  		return plus
+  	} else {
+  		return add
+  	}
+  }
+  
+  func main() {
+  	fn := test("-")
+  	res := fn(2, 1)
+  	fmt.Printf("res: %v\n", res)
+  }
+  ```
+
   
 
 - 111
