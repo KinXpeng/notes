@@ -909,6 +909,55 @@
   }
   ```
 
+- 匿名函数
+
+  ```go
+  func main() {
+  	var test = func(a, b int) int { // 此处使用匿名函数
+  		return a + b
+  	}
+  
+  	result := test(1, 2)
+  	fmt.Printf("result: %v\n", result)
+  }
+  
+  // 自己调用自己
+  res := func(a int, b int) int {
+    if a > b {
+      return a
+    } else {
+      return b
+    }
+  }(1, 2)
+  fmt.Printf("res: %v\n", res)
+  ```
+
+- 闭包
+
+  ```go
+  func add() func(int) int {
+  	var x int
+  	return func(y int) int {
+  		x += y
+  		return x
+  	}
+  }
+  
+  func main() {
+  	var f = add()
+  	fmt.Println(f(10))
+  	fmt.Println(f(20))
+  	fmt.Println(f(30))
+  }
+  
+  // 闭包 = 函数 + 引用环境
+  ```
+
+- 递归
+
+  ```go
+  ```
+
   
 
 - 111
