@@ -955,7 +955,60 @@
 
 - 递归
 
+  - 自己调用自己
+  - 必须定义函数的退出条件，否则会造成死循环
+  - go语言递归函数可能会产生一大堆的goroutine，也有可能 会出现栈空间内存溢出问题
+
+### 执行顺序
+
+- defer
+
   ```go
+  // 先定义的后执行
+  func main() {
+  	defer fmt.Println("step1")
+  	defer fmt.Println("step2")
+  	defer fmt.Println("step3")
+  }
+  
+  // 输出结果 =>>>>   step3 -> step2 -> step1
+  ```
+
+- init函数
+
+  - init函数**先于**main函数*自动执行*，不能被其它函数调用
+  - init函数没有输入参数、返回值
+  - 每个包可以有多个init函数
+  - 包的==每个源文件==也可以有多个init函数，这点比较特殊
+  - 不同包的init函数按照包导入的依赖关系决定执行顺序
+
+  - 执行顺序：变量初始化 -> init -> main
+
+### 指针
+
+- 基础
+
+  - 一个指针变量指向了一个值的内存地址
+
+  - 类型指针不能进行偏移和运算
+  - 指针操作：`&`（取地址）和`*`（根据地址取值）
+  - 
+
+- 实例
+
+  ```go
+  // 指针声明
+  func fn() *string {
+  	var name *string // 声明指针类型的变量
+  	var n string = "1111"
+  	name = &n 、、 赋值
+  	return name
+  }
+  
+  func main() {
+  	res := fn()
+  	fmt.Printf("res: %v\n", res)
+  }
   ```
 
   
