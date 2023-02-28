@@ -1001,14 +1001,102 @@
   func fn() *string {
   	var name *string // 声明指针类型的变量
   	var n string = "1111"
-  	name = &n 、、 赋值
+  	name = &n // 赋值
   	return name
   }
   
   func main() {
   	res := fn()
-  	fmt.Printf("res: %v\n", res)
+  	fmt.Printf("res: %v\n", res) // 地址 =>>> 0xc000096210s
+  	fmt.Printf("res: %v\n", *res) // 值  =>>> 1111
   }
+  
+  // 指向数组的指针
+  var ptr [MAX]*int  // 表示数组里面的元素类型是指针类型
+  
+  func main() {
+  	var arr = [3]int{1, 2, 3}
+  	var pArr [3]*int
+  	for i := 0; i < len(arr); i++ {
+  		pArr[i] = &arr[i]
+  	}
+  	fmt.Printf("pArr: %v\n", pArr) // 输出指针
+  
+  	for i := 0; i < len(pArr); i++ {
+  		fmt.Printf("pArr[i]: %v\n", *pArr[i]) // 输出原数据
+  	}
+  }
+  ```
+
+### 类型定义和类型别名
+
+- 类型定义
+
+  ```go
+  // 定义
+  type NewType Type
+  
+  func main() {
+  	type myInt int // 类型定义
+  	var a myInt
+  	a = 1
+  	fmt.Printf("a: %T %v\n", a, a) // =>>> main.myInt 1
+  }
+  
+  // 类型别名
+  func main() {
+  	type myInt = int 
+  	var a myInt
+  	a = 1
+  	fmt.Printf("a: %T %v\n", a, a) // =>>> int 1
+  }
+  ```
+
+### 结构体
+
+- 结构体定义
+
+  ```go
+  type Person struct {
+  	id    int
+  	name  string
+  	age   int
+  	email string
+  }
+  
+  type Customer struct {
+  	id, age     int // 相同类型合并定义
+  	name, email string
+  }
+  
+  func main() {
+  	var tom Person
+  	tom.id = 11 // 通过.进行访问 / 赋值
+  	tom.name = "tom"
+  	tom.age = 18
+  	tom.email = "tom@gmail.com"
+  	fmt.Printf("tom: %v\n", tom)
+  }
+  
+  // 匿名结构体
+  func main() {
+  	var jack struct { // 声明匿名结构体
+  		id   int
+  		name string
+  		age  int
+  	}
+  
+  	jack.id = 111
+  	jack.name = "jack"
+  	jack.age = 18
+  	fmt.Printf("jack: %v\n", jack)
+  }
+  ```
+
+- 结构体初始化
+
+  ```go
+  // 未初始化的结构体，成员都是零值 int 0,float 0.0,bool false,string nil nil
   ```
 
   
