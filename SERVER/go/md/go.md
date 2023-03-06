@@ -1097,8 +1097,193 @@
 
   ```go
   // 未初始化的结构体，成员都是零值 int 0,float 0.0,bool false,string nil nil
+  type Person struct {
+  	id    int
+  	name  string
+  	age   int
+  	email string
+  }
+  
+  func main() {
+  	var tom Person
+  	tom = Person{ // 键值对的方式部分初始化
+  		id:   1,
+  		name: "tom",
+  		age:  12,
+  	}
+  	fmt.Printf("tom: %v\n", tom)
+  }
+  
+  // 省略key
+  var tom Person
+  tom = Person{
+    1,
+    "tom",
+    12,
+    "111@qq.com",
+  }
+  fmt.Printf("tom: %v\n", tom)
   ```
 
+- 结构体指针
+
+  ```go
+  type Person struct {
+  	id   int
+  	name string
+  	age  int
+  }
   
+  func main() {
+  	var tom Person
+  	tom = Person{
+  		1,
+  		"tom",
+  		12,
+  	}
+  	var p_person *Person
+  	p_person = &tom
+  	fmt.Printf("p_person: %p\n", p_person)
+  }
+  
+  // 通过new的方式
+  type Person struct {
+  	id   int
+  	name string
+  	age  int
+  }
+  
+  func main() {
+  	var tom = new(Person)
+    tom.id = 11 // 可直接通过.进行访问 (*tom).id = 11
+  	tom.name = "tom"
+  	fmt.Printf("p_person: %p\n", tom)
+  }
+  ```
+
+- 结构体作为参数
+
+  ```go
+  type Person struct {
+  	id   int
+  	name string
+  	age  int
+  }
+  
+  // 作为普通的值传递时原结构体不会被更改
+  func test(per Person) {
+  	per.id = 18
+  	per.name = "test"
+  }
+  
+  func main() {
+  	var tom Person
+  	tom = Person{
+  		id:   12,
+  		name: "tom",
+  	}
+  	fmt.Printf("tom: %v\n", tom) // 12 tom
+  	test(tom)
+  	fmt.Printf("tom: %v\n", tom) // 此处的值与上面一致，没有被更改 =>>> 12 tom
+  }
+  
+  
+  // 结构体指针作为参数传递
+  type Person struct {
+  	id   int
+  	name string
+  	age  int
+  }
+  
+  func test(per *Person) { // 传递为指针会被修改
+    // per.id 自动解引用
+    // 默认为 (*per).id
+  	per.id = 18
+  	per.name = "test"
+  }
+  
+  func main() {
+  	var tom Person
+  	tom = Person{
+  		id:   12,
+  		name: "tom",
+  	}
+  	fmt.Printf("tom: %v\n", tom) // 12 tom
+  	test(&tom)
+  	fmt.Printf("tom: %v\n", tom) // 此处的值与上面不一致 =>>> 18 test
+  }
+  ```
+
+- 结构体嵌套
+
+  ```go
+  type Dog struct {
+  	name string
+  	age  int
+  }
+  
+  type Person struct {
+  	dog  Dog
+  	name string
+  	age  int
+  }
+  
+  func main() {
+  	var tom Person
+  	var dog = Dog{
+  		name: "testdog",
+  		age:  3,
+  	}
+  	tom = Person{
+  		dog:  dog,
+  		name: "tom",
+  		age:  12,
+  	}
+  
+  	fmt.Printf("tom: %v\n", tom)
+  }
+  ```
+
+### 方法
+
+- 语法
+
+  - Go中的方法，是一种特殊的函数，定义于struct之上（与struct关联、绑定），被称为struct的接受者（receiver）。
+
+  - 通俗的讲，方法就是有接收者的函数。
+
+    ```go
+    type mytype struct{}
+    
+    func (recv mytype) my_method(para) return_type{}
+    func (recv *mytype) my_method(para) return_type{}
+    ```
+
+- 实例
+
+  ```go
+  // 方法的receiver type并非一定是struct类型，也可以是type定义的类型别名、slice、map、channel、func类型等等
+  type Person struct {
+  	name string
+  }
+  
+  func (per Person) eat() {
+  	fmt.Printf("per.name-eat: %v\n", per.name)
+  }
+  
+  func (per Person) sleep() {
+  	fmt.Printf("per.name-sleep: %v\n", per.name)
+  }
+  
+  func main() {
+  	per := Person{
+  		name: "person111",
+  	}
+  	per.eat()
+  }
+  ```
+
+### 接口
 
 - 111
+- 11
