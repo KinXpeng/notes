@@ -1285,5 +1285,231 @@
 
 ### 接口
 
+- 实现接口
+
+  ```go
+  type USB interface {
+  	read()
+  	write()
+  }
+  
+  // 实现某个接口时需实现该接口的所有方法
+  type Mobile struct {
+  	name string
+  }
+  
+  func (m Mobile) read() {
+  	fmt.Printf("m-read: %v\n", m.name)
+  }
+  
+  func (m Mobile) write() {
+  	fmt.Printf("m-write: %v\n", m.name)
+  }
+  
+  func main() {
+  	c := Mobile{
+  		name: "测试",
+  	}
+  	c.read()
+  	c.write()
+  }
+  ```
+  
+- 真正意义上实现某个接口，一个接口对应不同个的状态（其他语言中称为多态）
+
+  ```go
+  type Pet interface {
+  	eat()
+  }
+  
+  type Dog struct {
+  	name string
+  }
+  
+  type Cat struct {
+  	name string
+  }
+  
+  func (dog Dog) eat() {
+  	fmt.Printf("dog=>> %v", dog.name)
+  }
+  
+  func (cat Cat) eat() {
+  	fmt.Printf("cat=>> %v", cat.name)
+  }
+  
+  func main() {
+  	var pet Pet // 真正意义上实现某个接口
+  	pet = Dog{
+  		name: "花花",
+  	}
+  	pet.eat()
+  	pet = Cat{
+  		name: "小白",
+  	}
+  	pet.eat()
+  }
+  ```
+
+- 接口嵌套（接口的组合）
+
+  ```go
+  type Fly interface {
+  	fly()
+  }
+  
+  type Swim interface {
+  	swim()
+  }
+  
+  type Flyfish interface { // 嵌套多个接口，聚合多个接口的功能
+  	Fly
+  	Swim
+  }
+  
+  type Animal struct {
+  }
+  
+  func (a Animal) fly() {
+  	fmt.Println("可以飞")
+  }
+  
+  func (a Animal) swim() {
+  	fmt.Println("可以游")
+  }
+  
+  func main() {
+  	var animal Flyfish
+  	animal = Animal{}
+  	animal.fly()
+  	animal.swim()
+  }
+  ```
+
+- 模拟OOP的属性和方法
+
+  - golang没有面向对象的概念，也没有封装的概念，但是可以通过结构体`struct`和函数绑定来实现OOP的属性和方法等特性。接收者receiver方法。
+
+### 继承
+
+- golang本质上没有oop的概念，也没有继承的概念，但是可以通过结构体实现这个特性。
+
+  ```go
+  type Animal struct {
+  	name string
+  	age  int
+  }
+  
+  type Dog struct {
+  	Animal
+  	id string
+  }
+  
+  // 实现类似继承的特性
+  func main() {
+  	dog := Dog{
+  		Animal{name: "dog", age: 1},
+  		"1231",
+  	}
+  	fmt.Printf("dog: %v\n", dog)
+  }
+  ```
+
+### 实现构造函数的功能
+
+```go
+type Person struct {
+	name string
+	age  int
+}
+
+func NewPerson(name string, age int) (*Person, error) {
+	if name == "" {
+		return nil, fmt.Errorf("name不能为空")
+	}
+	if age < 0 {
+		return nil, fmt.Errorf("age不能小于0")
+	}
+	return &Person{name: name, age: age}, nil
+}
+
+func main() {
+	person, err := NewPerson("john", 20)
+	if err == nil {
+		fmt.Printf("person: %v\n", *person)
+	} else {
+		fmt.Printf("err: %v\n", err)
+	}
+}
+```
+
+### go module 包管理工具
+
+- go mod使用方法
+
+  ```go
+  // 初始化模块
+  go mod init xxx
+  // 依赖关系处理，根据go.mod文件
+  go mod tidy
+  // 将依赖包复制到项目下的vendor目录
+  go mod vendor  // (如果包被屏蔽/墙，可以使用这个命令，随后使用过 build -mod=vendor编译)
+  // 显示依赖关系
+  go list -m all
+  // 显示详细依赖关系
+  go list -m -json all
+  // 下载依赖
+  go mod download [path@version] // [path@version]是非必写的
+  ```
+
+### 并发编程
+
+- 并发编程之协程
+
+  ```go
+  // 默认情况
+  func showMessage(msg string) {
+  	for i := 0; i < 5; i++ {
+  		fmt.Printf("msg: %v\n", msg)
+  		time.Sleep(time.Millisecond * 100)
+  	}
+  }
+  
+  func main() {
+  	showMessage("测试11111") 
+  	showMessage("测试22222")
+  }
+  // 输出=>>>  测试11111
+  //          测试11111
+  // ...
+  //          测试22222
+  //          测试22222
+  
+  // 启动协程
+  func showMessage(msg string) {
+  	for i := 0; i < 5; i++ {
+  		fmt.Printf("msg: %v\n", msg)
+  		time.Sleep(time.Millisecond * 100)
+  	}
+  }
+  
+  func main() {
+  	go showMessage("测试11111") // go启动了一个协程
+  	showMessage("测试22222") // main协程  主协程
+  }
+  
+  // 交替执行输出
+  // 输出=>>>  测试11111
+  //          测试22222
+  // ...
+  //          测试11111
+  //          测试22222
+  ```
+
+  - 主协程结束后（主函数退出），其他的协程也就结束了。
+  - `go` 开启协程
+  - `defer` 的函数最后执行
+
+- 并发编程之通道 channel
+
 - 111
-- 11
