@@ -1464,7 +1464,7 @@ func main() {
 
 ### 并发编程
 
-- 并发编程之协程
+- 协程
 
   ```go
   // 默认情况
@@ -1510,6 +1510,303 @@ func main() {
   - `go` 开启协程
   - `defer` 的函数最后执行
 
-- 并发编程之通道 channel
+- 通道 channel
 
-- 111
+  - 用于在 `goroutine` 之间共享数据，通道由make函数创建，该函数指定`chan ` 关键字和通道的元素类型。
+
+  - 将值发送到通道的代码块需要使用 ` <- ` 运算符
+
+  - 语法
+
+    ```go
+    Unbuffered := make(chan int)  // 整型无缓冲通道
+    buffered := make(chan int,10) // 整型有缓冲通道
+    
+    // 将值发送到通道的代码块需要使用 <- 运算符
+    // 一个包含5个值的缓冲区的字符串类型的goroutine1通道，然后通过通道发送字符串 "hello"
+    // goroutine1在左侧代表发送，在右侧代表接收
+    goroutine1 := make(chan string,5) // 字符串缓冲通道
+    goroutine1 <- "hello" // 通过通道发送字符串
+    
+    // <- 运算符附加在通道变量（goroutine1）的左侧，以接收来自通道的值
+    data := <-goroutine1 // 从通道接收字符串
+    ```
+
+  - 注意
+
+    - 对于同一个通道，发送操作之间是互斥的，接收操作之间也是互斥的。
+    - 发送操作和接收操作中对元素值的处理都是不可分割的。
+    - 发送操作在完全完成之前会被阻塞，接收操作也是如此。
+
+  - 实例
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"math/rand"
+    	"time"
+    )
+    
+    var values = make(chan int)
+    
+    func send() {
+    	rand.Seed(time.Now().UnixNano())
+    	value := rand.Intn(10) // 随机数
+    	fmt.Printf("send: %v\n", value)
+    	time.Sleep(time.Second * 5) // 等待5秒
+    	values <- value // 将值发送给values
+    }
+    
+    func main() {
+    	defer close(values)
+    	go send() // 开启协程
+    	fmt.Println("waiting...")
+    	value := <-values // 接收通道的值
+    	fmt.Printf("receive: %v\n", value)
+    	fmt.Println("end...")
+    }
+    ```
+
+- WaitGroup实现同步
+
+  - 协程之间的同步
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync"
+    )
+    
+    var wp sync.WaitGroup
+    
+    func showMsg(i int) {
+    	// defer wp.Add(-1)
+    	defer wp.Done() // 执行完成后会-1.与wp.Add(-1)同理
+    	// defer wp.Wait()
+    	fmt.Printf("i: %v\n", i)
+    }
+    
+    func main() {
+    	for i := 0; i < 10; i++ {
+    		// 启动一个协程
+    		go showMsg(i)
+    		wp.Add(1)
+    	}
+    	wp.Wait() // 主协程等待子协程的结束
+    
+    	fmt.Println("end...")
+    }
+    ```
+
+  - `sync.WaitGroup`包提供了一种简单的方法来同步goroutine的执行，使得在所有goroutine完成之前，主程序不会退出。`sync.WaitGroup`是一个计数器，可以用来记录goroutine的执行数量。当计数器为0时，主程序就知道所有goroutine已经完成。
+
+    ```go
+    package main
+    
+    import (
+        "fmt"
+        "sync"
+    )
+    
+    func main() {
+        var wg sync.WaitGroup
+    
+        for i := 0; i < 5; i++ {
+            wg.Add(1) // 增加计数器
+            go func(x int) {
+                fmt.Println("goroutine", x)
+                wg.Done() // 减少计数器
+            }(i)
+        }
+    
+        wg.Wait() // 等待所有goroutine完成
+        fmt.Println("All goroutines are done.")
+    }
+    ```
+
+- runtime包
+
+  - runtime.Gosched()
+
+    - 让出CPU时间片，重新等待安排任务。
+
+      ```go
+      package main
+      
+      import (
+      	"fmt"
+      	"runtime"
+      )
+      
+      func show(s string) {
+      	for i := 0; i < 2; i++ {
+      		fmt.Printf("s: %v\n", s)
+      	}
+      }
+      
+      func main() {
+      	go show("1111") // 启动子协程
+      	for i := 0; i < 2; i++ {
+      		runtime.Gosched() // 让给其它子协程来执行（调度）
+      		fmt.Printf("\"222\": %v\n", "222")
+      	}
+      	fmt.Println("end...")
+      }
+      ```
+
+  - routime.Goexit()
+
+    - 退出当前协程
+
+      ```go
+      package main
+      
+      import (
+      	"fmt"
+      	"runtime"
+      	"time"
+      )
+      
+      func show() {
+      	for i := 0; i < 10; i++ {
+      		fmt.Printf("i: %v\n", i)
+      		if i >= 5 {
+      			runtime.Goexit() // 满足条件退出协程
+      		}
+      	}
+      }
+      
+      func main() {
+      	go show() // 启动子协程
+      	time.Sleep(time.Second) // 停留一秒保证协程执行完成
+      }
+      ```
+
+  - runtime.GOMAXPROCS
+
+    - 最大使用核心数（默认使用最多）
+
+      ```go
+      package main
+      
+      import (
+      	"fmt"
+      	"runtime"
+      	"time"
+      )
+      
+      func a() {
+      	for i := 0; i < 10; i++ {
+      		fmt.Printf("a: %v\n", i)
+      	}
+      }
+      
+      func b() {
+      	for i := 0; i < 10; i++ {
+      		fmt.Printf("b: %v\n", i)
+      	}
+      }
+      
+      func main() {
+      	fmt.Printf("runtime.NumCPU(): %v\n", runtime.NumCPU()) // CPU核心的数量
+      	runtime.GOMAXPROCS(1)                                  // 设置CPU最大可用核心数
+      	// 一个核心数时，a和b会先执行完一个，再去执行另一个
+      	// 多个核心数时，a，b会交替执行
+      	go a()
+      	go b()
+      	time.Sleep(time.Second * 2)
+      }
+      ```
+
+- Mutext互斥锁实现同步
+
+  - 可以使用 `sync.Mutex` 实现互斥锁，以确保多个 goroutine 之间的同步执行。互斥锁是一种用于保护共享资源的机制，可以确保在同一时刻只有一个 goroutine 可以访问共享资源。
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync"
+    	"time"
+    )
+    
+    var count int
+    var mutex sync.Mutex
+    
+    func main() {
+    	for i := 0; i < 10; i++ {
+    		go increment()
+    	}
+    	time.Sleep(time.Second)
+    	fmt.Println("Final count:", count)
+    }
+    
+    // 加锁保证执行输出的顺序一致
+    func increment() {
+    	mutex.Lock() // 加锁
+    	count++
+    	fmt.Println("Incrementing:", count)
+    	mutex.Unlock() // 解锁
+    }
+    ```
+
+  - 案例2
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync"
+    )
+    
+    var i int = 10
+    var wg sync.WaitGroup
+    var lock sync.Mutex
+    
+    func add() {
+    	lock.Lock()
+    	defer wg.Done()
+    	i += 1
+    	lock.Unlock()
+    }
+    
+    func plus() {
+    	lock.Lock()
+    	defer wg.Done()
+    	i -= 1
+    	lock.Unlock()
+    }
+    
+    func main() {
+    	for i := 0; i < 100; i++ {
+    		wg.Add(1)
+    		go add()
+    		wg.Add(1)
+    		go plus()
+    	}
+    	wg.Wait()
+    	fmt.Printf("end=>>>: %v\n", i)
+    }
+    ```
+
+- channel的遍历
+
+- select
+
+- Timer
+
+- Ticker
+
+- 原子变量的引入
+
+- 原子操作详解
+
+### 标准库os模块
+
+- 11111
