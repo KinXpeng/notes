@@ -1,6 +1,6 @@
-#### Go 语言
+## Go 语言
 
-##### Go入门及基础指令
+### Go入门及基础指令
 
 - 常用指令
 
@@ -31,8 +31,6 @@
     fmt.Printf("n的类型%c",n) // 格式化输出
     fmt.Printf("n的类型%d",n) // 输出码值
     ```
-
-    
 
   - 123
 
@@ -71,9 +69,8 @@
 
   - 111
 
-- 123
 
-##### 数据类型
+### 数据类型
 
 - 基本数据类型
 
@@ -131,13 +128,11 @@
     )
     ```
 
-    
-
   - 1
 
 - 派生/复杂数据类型
 
-#### 包的概念
+### 包的概念
 
 - 初始化包
 
@@ -186,8 +181,6 @@
   }
   ```
 
-  
-
 - 2
 
 ### 常用的数组方法
@@ -220,148 +213,6 @@
   ```
 
 - 11
-
-### 数据库连接
-
-- 注意事项
-
-  - 初始化mod
-
-    ```go
-    go mod init server
-    ```
-
-  - 下载 `gin` 框架和 `mysql` 库
-
-    ```go
-    // 下载gin
-    go get -u github.com/gin-gonic/gin
-    // 下载mysql
-    go get -u github.com/go-sql-driver/mysql
-    ```
-
-    
-
-- 连接mysql数据库
-
-  ```go
-  // utils/db.go
-  package utils
-  
-  import (
-  	"database/sql"
-  	"fmt"
-  
-  	_ "github.com/go-sql-driver/mysql"
-  )
-  
-  func DbConnect() *sql.DB {
-  	db, err := sql.Open("mysql", "root:password@(localhost:3306)/database")
-  	db.SetMaxOpenConns(10)
-  	db.SetMaxIdleConns(5)
-  	if err != nil {
-  		panic(err)
-  	}
-  	if err := db.Ping(); err != nil {
-  		fmt.Println("连接失败")
-  		panic(err.Error())
-  	}
-  	fmt.Println("连接成功")
-  	return db
-  }
-  ```
-
-- 建立连接并查询
-
-  ```go
-  // routers/router.go
-  package routers
-  
-  import (
-  	"database/sql"
-  	"fmt"
-  	"log"
-  	"net/http"
-  	"server/utils"
-  
-  	"github.com/gin-gonic/gin"
-  )
-  
-  var (
-  	Db *sql.DB
-  )
-  
-  type User struct {
-  	Id       string `json:"id" form:"id"`
-  	Username string `json:"username" form:"username"`
-  	Age      string `json:"age" form:"age"`
-  	Sex      string `json:"sex" form:"sex"`
-  }
-  
-  // 中间件
-  func MiddleWare() gin.HandlerFunc {
-  	return func(c *gin.Context) {
-  		fmt.Println("中间件执行完毕")
-  		c.Next()
-  	}
-  }
-  
-  // 总路由
-  func SetupRouter() *gin.Engine {
-  	Db = utils.DbConnect()
-  	// defer Db.Close()
-  	r := gin.Default()
-  	r.Use(MiddleWare())
-  	user := r.Group("/user")
-  	{
-  		user.GET("/list", UserHandler)
-  	}
-  	return r
-  }
-  
-  // user路由
-  func UserHandler(c *gin.Context) {
-  	var user User
-  	userList := make([]User, 0)
-  	rows, err := Db.Query("select * from articles")
-  	defer rows.Close()
-  	if err != nil {
-  		log.Fatal(err)
-  	}
-  	i := 0
-    for rows.Next() { //循环显示所有的数据(顺序与数据库顺序一致)
-  		rows.Scan(&user.Id, &user.Username, &user.Age, &user.Sex)
-  		userList = append(userList, user)
-  		i++
-  	}
-  	c.JSON(http.StatusOK, gin.H{
-  		"code": 0,
-  		"msg":  "请求成功",
-  		"data": &userList,
-  	})
-  }
-  ```
-
-- 入口文件初始化
-
-  ```go
-  // main.go
-  package main
-  
-  import (
-  	"server/routers"
-  )
-  
-  func main() {
-  	r := routers.SetupRouter()
-  	r.Run(":88")
-  }
-  ```
-
-
-
-
-## go语言基础
 
 ### 字符串方法
 
@@ -1797,16 +1648,518 @@ func main() {
 
 - channel的遍历
 
+  ```go
+  package main
+  
+  import "fmt"
+  
+  var c = make(chan int)
+  
+  func main() {
+  	go func() {
+  		for i := 0; i < 2; i++ {
+  			c <- i
+  		}
+  		close(c) // 记得及时关闭通道，否则会造成死锁 deadlock
+  	}()
+    
+    // 第一种方式
+  	// r := <-c
+  	// fmt.Printf("r: %v\n", r)
+  	// r = <-c
+  	// fmt.Printf("r: %v\n", r)
+  	// r = <-c
+  	// fmt.Printf("r: %v\n", r)
+  
+  	// 第二种方式  
+  	// for v := range c {
+  	// 	fmt.Printf("v: %v\n", v)
+  	// }
+  
+    // 第三种方式
+  	for {
+  		v, ok := <-c // 有两个返回值
+  		if ok {
+  			fmt.Printf("v: %v\n", v)
+  		} else {
+  			break
+  		}
+  	}
+  }
+  ```
+
 - select
+
+  - go中的一个控制结构，类似于switch语句，用于异步处理IO操作。select会监听语句中channel的读写操作，当case中channel读写状态为非阻塞状态（既能读写）时，将会触发相应的操作。
+
+  - 如果有多个case可以运行，select会随机公平的选出一个执行，其他不会操作。
+
+  - 如果没有可执行的case语句，且有default语句，那就会执行default操作。
+
+  - 如果没有可执行的case语句，且没有default语句，select将会阻塞，直到某个case通信可以运行。
+
+  - 例子
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"time"
+    )
+    
+    var (
+    	chanInt = make(chan int)
+    	chanStr = make(chan string)
+    )
+    
+    func main() {
+    	go func() {
+    		chanInt <- 111
+    		chanStr <- "hello"
+    		close(chanInt) // 及时关闭通道
+    		close(chanStr) 
+    	}()
+    
+    	for {
+    		select {
+    		case r := <-chanInt:
+    			fmt.Printf("chanInt: %v\n", r)
+    		case r := <-chanStr:
+    			fmt.Printf("rchanStr: %v\n", r)
+    		default:
+    			fmt.Printf("\"default\": %v\n", "default")
+    		}
+    		time.Sleep(time.Second)
+    	}
+    }
+    
+    ```
 
 - Timer
 
+  - 定时器，可以实现一些定时操作。
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"time"
+    )
+    
+    func main() {
+    	timer := time.NewTimer(time.Second * 2)
+    	fmt.Printf("time.Now(): %v\n", time.Now())
+    	t1 := <-timer.C // 阻塞的，直到时间到了
+    	fmt.Printf("t1: %v\n", t1)
+    
+    	// 也可单独使用sleep等待
+    	time.Sleep(time.Second * 2)
+    
+    	// 在两秒后执行
+    	<-time.After(time.Second * 2)
+    
+    	// 停止定时器
+    	go func() {
+    		<-timer.C
+    	}()
+    	s := timer.Stop()
+    	if s {
+    		fmt.Printf("s: %v\n", s)
+    	}
+    
+    	// 重置定时器
+    	timer.Reset(time.Second) // 可重置为1秒
+    }
+    ```
+
 - Ticker
+
+  - Timer只执行一次，Ticker可以周期的执行
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"time"
+    )
+    
+    func main() {
+    	i := 1
+    	ticker := time.NewTicker(time.Second)
+    	defer ticker.Stop() // 使用defer及时关闭定时器
+    	for range ticker.C {
+    		fmt.Printf("\"ticker\": %v\n", "ticker") // 周期性的执行
+    		i++
+    		if i > 5 {
+    			fmt.Printf("\"stop\": %v\n", "stop")
+    			return
+    		}
+    	}
+    }
+    ```
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"time"
+    )
+    
+    func main() {
+    	ticker := time.NewTicker(time.Second)
+    	chanInt := make(chan int)
+    
+    	go func() {
+    		for range ticker.C {
+    			select {
+    			case chanInt <- 1:
+    			case chanInt <- 2:
+    			case chanInt <- 3:
+    			}
+    		}
+    	}()
+    
+    	sum := 0
+    	for v := range chanInt {
+    		fmt.Printf("收到: %v\n", v)
+    		sum += v
+    		if sum > 10 {
+    			break
+    		}
+    	}
+    }
+    ```
 
 - 原子变量的引入
 
+  - 原先可通过加锁实现同步
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync"
+    	"time"
+    )
+    
+    var i int = 100
+    var lock sync.Mutex
+    
+    func add() {
+    	lock.Lock()
+    	i++
+    	lock.Unlock()
+    }
+    
+    func sub() {
+    	lock.Lock()
+    	i--
+    	lock.Unlock()
+    }
+    
+    func main() {
+    	for i := 0; i < 100; i++ {
+    		go add()
+    		go sub()
+    	}
+    	time.Sleep(time.Second * 2)
+    	fmt.Printf("i: %v\n", i) // 保证输出的都是100
+    }
+    ```
+
+  - `sync/atomic`包
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync/atomic"
+    	"time"
+    )
+    
+    var i int32 = 100
+    
+    func add() {
+    	atomic.AddInt32(&i, 1) // 添加前会进行比较
+    }
+    
+    func sub() {
+    	atomic.AddInt32(&i, -1)
+    }
+    
+    func main() {
+    	for i := 0; i < 100; i++ {
+    		go add()
+    		go sub()
+    	}
+    	time.Sleep(time.Second * 2)
+    	fmt.Printf("i: %v\n", i)
+    }
+    ```
+
 - 原子操作详解
+
+  - 增减
+
+    ```go
+    package main
+    
+    import (
+    	"fmt"
+    	"sync/atomic"
+    )
+    
+    func main() {
+    	var i int32 = 100
+    	atomic.AddInt32(&i, 1)
+    	fmt.Printf("i: %v\n", i)
+    	atomic.AddInt32(&i, -1)
+    	fmt.Printf("i: %v\n", i)
+    
+    	var j int64 = 200
+    	atomic.AddInt64(&j, 1) // 多种类型
+    	fmt.Printf("j: %v\n", j)
+    }
+    ```
+
+  - 载入 read
+
+    ```go
+    var i int32 = 100
+    res := atomic.LoadInt32(&i) // 读
+    fmt.Printf("res: %v\n", res)
+    ```
+
+  - 比较并交换cas
+
+    ```go
+    var i int32 = 100
+    // 参数1：需要修改的值； 参数2：旧值；参数3：新值
+    b := atomic.CompareAndSwapInt32(&i, 100, 200) // 返回值为bool，修改成功为true 反之false（AddInt32的底层是cas）
+    fmt.Printf("b: %v\n", b) // true
+    fmt.Printf("i: %v\n", i) // 200
+    ```
+
+  - 交换
+
+    ```go
+    var i int32 = 100
+    // 参数1：需要交换的值；参数2：新值
+    old := atomic.SwapInt32(&i, 300) // 直接交换，不进行比较，返回旧值
+    fmt.Printf("old: %v\n", old) // 100
+    fmt.Printf("i: %v\n", i) // 300
+    ```
+
+  - 存储 write
+
+    ```go
+    var i int64 = 100
+    atomic.StoreInt64(&i, 200) // 写
+    fmt.Printf("i: %v\n", i)
+    ```
 
 ### 标准库os模块
 
-- 11111
+- 文件目录
+
+  - 创建文件
+
+    ```go
+    func createFile(name string) {
+      // 等价于 OpenFile(name,O_RDWR|O_CREATE|O_TRUNC,0666)
+    	f, err := os.Create(name + ".txt")
+    	if err != nil {
+    		fmt.Printf("nil: %v\n", nil)
+    	} else {
+    		fmt.Printf("f.Name(): %v\n", f.Name())
+    	}
+    }
+    ```
+
+  - 创建目录
+
+    ```go
+    func makeDir() {
+    	err := os.Mkdir("test", os.ModePerm) // os.ModePerm表示有最高权限创建
+    	if err != nil {
+    		fmt.Printf("err: %v\n", err)
+    	}
+    }
+    
+    // 多级目录
+    func makeDirAll() {
+    	err := os.MkdirAll("a/b/c", os.ModePerm)
+    	if err != nil {
+    		fmt.Printf("err: %v\n", err)
+    	}
+    }
+    ```
+
+  - 删除目录/文件
+
+    ```go
+    func remove(name string) {
+    	err := os.Remove(name)
+      // err := os.RemoveAll(name) // 删除所有（包括目录）
+    	if err != nil {
+    		fmt.Printf("err: %v\n", err)
+    	}
+    }
+    // remove("test.txt")
+    ```
+
+  - 获得工作目录
+
+    ```go
+    dir, _ := os.Getwd()
+    fmt.Printf("dir: %v\n", dir)
+    ```
+
+  - 修改工作目录
+
+    ```go
+    os.Chdir("d:/")
+    
+    // 获得临时目录
+    s := os.TempDir()
+    fmt.Printf("s: %v\n", s)
+    ```
+
+  - 重命名文件
+
+    ```go
+    err := os.Rename("test.txt", "111.txt")
+    if err != nil {
+      fmt.Printf("err: %v\n", err)
+    }
+    ```
+
+  - 读文件
+
+    ```go
+    b, _ := os.ReadFile("111.txt")
+    fmt.Printf("b: %v\n", string(b[:]))
+    
+    // 循环读取文件
+    f, _ := os.Open("test.txt")
+    for {
+      buf := make([]byte, 10)
+      n, err := f.Read(buf) // 读
+      if err == io.EOF { 
+        break 
+      }
+      fmt.Printf("n: %v\n", n)
+      fmt.Printf("string(buf): %v\n", string(buf))
+    }
+    f.Close()
+    
+    // 从某个偏移量开始读取
+    f, _ := os.Open("test.txt")
+    buf := make([]byte, 5)
+    n, _ := f.ReadAt(buf, 3) // 从第三个开始读
+    fmt.Printf("n: %v\n", n)
+    fmt.Printf("string(buf): %v\n", string(buf))
+    
+    // 遍历目录
+    de, _ := os.ReadDir("a") // 读取目录
+    for _, v := range de {
+      fmt.Printf("v.IsDir(): %v\n", v.IsDir()) // 判断是不是目录
+      fmt.Printf("v.Name(): %v\n", v.Name())
+    }
+    
+    // 定位读取位置
+    f, _ := os.Open("test.txt")
+    f.Seek(3, 0) // 从哪一位开始读取
+    buf := make([]byte, 10)
+    n, _ := f.Read(buf)
+    fmt.Printf("n: %v\n", n)
+    fmt.Printf("string(buf): %v\n", string(buf))
+    f.Close()
+    ```
+
+  - 写文件
+
+    ```go
+    os.WriteFile("111.txt", []byte("hello"), os.ModePerm)
+    
+    // os.O_APPEND代表可追加,os.O_TRUNC代表覆盖
+    f, _ := os.OpenFile("test.txt", os.O_RDWR|os.O_APPEND, 0755)
+    f.Write([]byte("hello world"))
+    f.Close()
+    
+    // 写入字符串
+    f, _ := os.OpenFile("test.txt", os.O_RDWR|os.O_TRUNC, 0755)
+    f.WriteString("1231231231")
+    f.Close()
+    
+    // 从指定位置开始写
+    f, _ := os.OpenFile("test.txt", os.O_RDWR, 0755)
+    f.WriteAt([]byte("aaaa"), 3)
+    f.Close()
+    ```
+
+  - 打开/关闭文件
+
+    ```go
+    f,err := os.Open("111.txt")
+    if err != nil {
+      fmt.Printf("err: %v\n", err)
+    }
+    fmt.Printf("f.Name(): %v\n", f.Name())
+    f.Close() // 记得关闭
+    
+    // 文件不存在时则创建
+    f, err := os.OpenFile("test.txt", os.O_RDWR|os.O_CREATE, 755)
+    if err != nil {
+      fmt.Printf("err: %v\n", err)
+    } else {
+      fmt.Printf("f.Name(): %v\n", f.Name())
+      f.Close()
+    }
+    
+    // 创建临时文件 第一个参数 目录默认，Temp 第二个参数 文件名前缀
+    f, _ := os.CreateTemp("", "temp")
+    fmt.Printf("f.Name(): %v\n", f.Name())
+    ```
+
+- 进程相关
+
+- 环境相关
+
+  ```go
+  // 获得所有环境变量
+  s := os.Environ()
+  fmt.Printf("s: %v\n", s)
+  
+  // 获得某个环境变量
+  s := os.Getenv("GOPATH")
+  fmt.Printf("s: %v\n", s)
+  
+  // 设置环境变量
+  os.Setenv("aaa", "env1")
+  s2 := os.Getenv("aaa")
+  fmt.Printf("s2: %v\n", s2)
+  
+  // 查找
+  s, b := os.LookupEnv("aaa")
+  fmt.Printf("b: %v\n", b) // 是否存在环境变量 true/false
+  fmt.Printf("s: %v\n", s)
+  
+  // 替换
+  os.Setenv("NAME", "tes t")
+  os.Setenv("AGE", "a/b/c")
+  fmt.Println(os.ExpandEnv("$NAME lives in ${AGE}")) // ===> test lives in a/b/c
+  
+  // 清空环境变量
+  os.Clearenv()
+  ```
+
+  
+
+- 111
