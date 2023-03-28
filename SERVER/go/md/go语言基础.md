@@ -2160,6 +2160,241 @@ func main() {
   os.Clearenv()
   ```
 
+- io包
+
+  ```go
+  // copy方法
+  r := strings.NewReader("hello world")
+  _, err := io.Copy(os.Stdout, r)
+  if err != nil {
+    log.Fatal(err)
+  }
+  ```
+
+- ioutil包
+
+  - ReadAll
+
+    ```go
+    f, err := os.Open("test.txt") // hello world
+    defer f.Close()
+    if err != nil {
+      log.Fatal(err)
+    }
+    
+    b, _ := ioutil.ReadAll(f)
+    fmt.Printf("b: %v\n", string(b)) // ==>> b: hello world
+    ```
+
+  - ReadDir
+
+  - ReadFile
+
+  - WriteFile
+
+    ```go
+    ioutil.WriteFile("test.txt", []byte("123123123_123"), 0664)
+    ```
+
+  - TempDir
+
+  - TempFile
+
+- bufio包
+
+  - NewReader ---
+  - ReadString
+  - NewReadSize
+  - Reset
+  - Read
+  - ReadByte
+  - UnreadByte
+  - ReadRune
+  - UnreadRune
+  - ReadLine
+  - ReadSlice
+  - ReadBytes
+  - WriteTo
+  - 
+  - NewWriter ---
+  - NewWriterSize
+  - Reset
+  - Bufferd
+  - Available
+  - Write
+  - WriteString
+  - Flush
+  - ReadFrom
+  - 
+  - NewScanner ---
+  - Scan
+  - ScanBytes
+  - ScanRunes 
+  - ScanWords
+  - ScanLines
+
+- log包
+
+  - print  单纯打印日志
+
+    ```go
+    log.Print("11111") // 2023/03/26 22:44:24 11111
+    log.Printf("11111 %d", 100)
+    log.Println("12313")
+    
+    // 设置打印格式
+    log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+    log.SetPrefix("前缀设置")
+    i := log.Flags()
+    fmt.Printf("i: %v\n", i)
+    log.Print("log....") // 2023/03/26 22:57:39 main.go:12: log....
+    ```
+
+  - panic  打印日志，抛出panic异常
+
+    ```go
+    // 会执行defer
+    defer log.Print("11111")
+    log.Panic("panic 22222")
+    log.Println("33333") // 不执行
+    ```
+
+  - fatal  打印日志，强制结束程序（os.Exit(1)），defer函数不会执行
+
+    ```go
+    // 不会执行defer
+    defer log.Print("11111")
+    log.Fatal("fatal 22222") // 调用了os.Exit(1)
+    log.Println("33333") // 不执行
+    ```
+
+- 标准库builtin（不用导入）
+
+- - append
+
+  - len
+
+  - print、println
+
+  - panic
+
+  - new
+
+    - new可以分配任意类型的数据
+    - new分配返回的是指针 *T
+    - new分配的空间被清零
+
+  - make
+
+    - make只能用来分配及初始化类型为slice、map、chan的数据
+    - make返回引用 T
+    - make分配后，会进行初始化
+
+  - 1111
+
+    ```go
+    // append
+    s := []int{1, 2, 3}
+    s = append(s, 100)
+    fmt.Printf("s: %v\n", s)
+    s1 := []int{4, 5, 6, 7, 8}
+    s = append(s, s1...)
+    fmt.Printf("s: %v\n", s)
+    
+    // len
+    fmt.Printf("len(s): %v\n", len(s))
+    
+    // print println
+    name := "test"
+    age := 12
+    print("name=>>>", name, "\n")
+    println("age=>>>", age)
+    print(11111111)
+    
+    // panic
+    defer println("panic之后还会执行")
+    panic("抛出了异常")
+    println("不会执行")
+    
+    // new
+    b := new(bool)
+    i := new(int)
+    fmt.Printf("b: %v\n", *b)
+    fmt.Printf("i: %v\n", *i)
+    
+    // make
+    arr := make([]int, 10)
+    fmt.Printf("arr: %v\n", arr)
+    ```
+
+- 标准库bytes
+
+  - Contains
+    - 是否包含
+  - Count 
+    - 包含几次
+  - Repeat
+    - 重复几次
+  - Replace
+  - Runes
+  - Join
+    - 字节切片连接
+
+  - Reader类型
+  - Buffer类型
+
+  ```go
+  // 类型转换
+  var i int = 100
+  var b byte = 10
+  i = int(b)
+  b = byte(i)
+  fmt.Printf("i: %v\n", i)
+  fmt.Printf("b: %v\n", b)
   
+  var s string = "hello world"
+  b := []byte{1, 2, 3, 4, 5}
+  s = string(b)
+  b = []byte(s)
+  fmt.Printf("s: %v\n", s)
+  fmt.Printf("b: %v\n", b)
+  
+  // bytes.Contains
+  var s string = "1111 2222"
+  b := []byte(s)
+  b1 := []byte("1111")
+  b2 := []byte("3333")
+  
+  flag := bytes.Contains(b, b1)
+  fmt.Printf("flag: %v\n", flag)
+  flag = bytes.Contains(b, b2)
+  fmt.Printf("flag: %v\n", flag)
+  ```
+
+- 标准库errors
+
+  ```go
+  type error interface{
+    Error() string
+  }
+  
+  errors.New("error 了")
+  ```
+
+- sort
+
+- time
+
+  ```go
+  now := time.Now()
+  println(now.Unix()) // 毫秒数
+  println(now.UnixNano()) // 纳秒数
+  ```
+
+- json
+
+- xml
+
+- math
 
 - 111
