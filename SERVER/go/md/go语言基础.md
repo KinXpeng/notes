@@ -2393,8 +2393,103 @@ func main() {
 
 - json
 
+  ```go
+  package main
+  
+  import (
+  	"encoding/json"
+  	"fmt"
+  )
+  
+  type Person struct {
+  	Name    string
+  	Age     int
+  	Address string
+  }
+  
+  func main() {
+  	p := Person{
+  		Name:    "test",
+  		Age:     2,
+  		Address: "北京",
+  	}
+  	
+    // 结构体转为字符串
+  	b, err := json.Marshal(p) // 返回字节数组
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  	}
+  	fmt.Printf("b: %v\n", string(b))
+    
+    // 字符串转结构体
+    b := []byte(`{"Name":"test","Age":2,"Address":"北京"}`)
+  	var p Person
+  	json.Unmarshal(b, &p)
+  	fmt.Printf("p: %v\n", p)
+  }
+  ```
+
 - xml
+
+  ```go
+  package main
+  
+  import (
+  	"encoding/xml"
+  	"fmt"
+  )
+  
+  type Person struct {
+  	XMLName xml.Name `xml:"person"`
+  	Name    string   `xml:"name"`
+  	Age     int      `xml:"age"`
+  	Email   string   `xml:"email"`
+  }
+  
+  func main() {
+  	person := Person{
+  		Name:  "test",
+  		Age:   20,
+  		Email: "111@qq.com",
+  	}
+    // 无缩进
+    // b, _ := xml.Marshal(person)
+    
+    // 有缩进
+  	b, _ := xml.MarshalIndent(person, " ", "  ")
+  	fmt.Printf("b: %v\n", string(b))
+    
+    // xml转对象
+    s := ` <person>
+  		<name>test</name>
+  		<age>20</age>
+  		<email>111@qq.com</email>
+  	</person>`
+  	b := []byte(s)
+  	var per Person
+  	xml.Unmarshal(b, &per)
+  	fmt.Printf("per: %v\n", per)
+  }
+  ```
 
 - math
 
-- 111
+  - math.MaxFloat64
+  - math.SmallestNonzeroFloat64
+  - math.MaxFloat32
+  - math.SmallestNonzeroFloat32
+  - math.MaxInt8
+  - math.MinInt8
+  - math.Pi
+  - ......
+  - math.Abs
+  - math.Ceil
+  - math.Floor
+  - ......
+  - rand.Int
+  - rand.Intn(100) 
+  - rand.Float32
+
+## 操作mysql数据库
+
+- 1111
