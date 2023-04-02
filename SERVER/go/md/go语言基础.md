@@ -2492,4 +2492,218 @@ func main() {
 
 ## 操作mysql数据库
 
+- 登录Mysql root账户
+
+  ```go
+  mysql -u root -p // 之后再输入密码
+  
+  // 显示command not found 时
+  export PATH=$PATH:/usr/local/mysql/bin
+  ```
+
+- 退出Mysql登录
+
+  ```go
+  exit
+  ```
+
+- 开启/关闭/重启 Mysql
+
+  ```go
+  // 开启
+  sudo /usr/local/mysql/support-files/mysql.server start
+  // 关闭
+  sudo /usr/local/mysql/support-files/mysql.server stop
+  // 重启
+  sudo /usr/local/mysql/support-files/mysql.server restart
+  ```
+
+- 创建一个go_db的数据库
+
+  ```go
+  create database go_db
+  ```
+
+- 打开数据库
+
+  ```go
+  use go_db
+  ```
+
+- 创建表
+
+  ```sql
+  CREATE TABLE user_tbl(
+  	id INTEGER PRIMARY KEY AUTO_INCREMEMT,
+    username VARCHAR(20),
+    PASSWORD VARCHAR(20)
+  );
+  
+  create table user_tbl(id integer primary key auto_increment,username varchar(20),password varchar(20));
+  
+  // 显示表结构
+  desc user_tbl;
+  ```
+
+- 添加模拟数据
+
+  ```sql
+  insert into user_tbl(username,password) values("test1","1231")
+  ```
+
+- 安装配置mysql驱动 [mysql包](https://pkg.go.dev/github.com/go-sql-driver/mysql#section-readme)
+
+  ```go
+  // 下载驱动
+  go get -u github.com/go-sql-driver/mysql
+  
+  // 
+  package main
+  
+  import (
+  	"database/sql"
+  	"time"
+  
+  	_ "github.com/go-sql-driver/mysql"
+  )
+  
+  func main() {
+  	db, err := sql.Open("mysql", "user:password@/dbname")
+  	if err != nil {
+  		panic(err)
+  	}
+  	// 最大连接时长
+  	db.SetConnMaxLifetime(time.Minute * 3)
+  	// 最大连接数
+  	db.SetMaxOpenConns(10)
+  	// 空闲连接数
+  	db.SetMaxIdleConns(10)
+  }
+  ```
+
+- 连接mysql
+
+  ```go
+  package main
+  
+  import (
+  	"database/sql"
+  	"fmt"
+  
+  	_ "github.com/go-sql-driver/mysql"
+  )
+  
+  var db *sql.DB
+  
+  func initDB() (err error) {
+    // go_db 是数据库名称
+  	dsn := "user:password@tcp(127.0.0.1:3306)/go_db?charset=utf8&parseTime=True"
+  	db, err = sql.Open("mysql", dsn)
+  	if err != nil {
+  		return err
+  	}
+  
+  	err = db.Ping()
+  	if err != nil {
+  		return err
+  	}
+  	return nil
+  }
+  
+  func main() {
+  	err := initDB()
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  	} else {
+  		fmt.Println("连接成功！")
+  	}
+    
+  	// 插入数据  
+    insertData("李四", "98123")
+    
+    // 查询数据
+  	queryOneRow(3)
+    
+    // 查询多行数据
+  	queryManyRow()
+    
+    // 更新数据
+  	updateData("王五", "90909", 2)
+  }
+  ```
+
+- 插入数据
+
+  ```go
+  // 插入数据
+  func insertData(username, password string) {
+  	sqlStr := "insert into user_tbl(username,password) values(?,?)"
+  	ret, err := db.Exec(sqlStr, username, password)
+  	if err != nil {
+  		fmt.Printf("insert failed err: %v\n", err)
+  		return
+  	}
+  
+  	insertID, _ := ret.LastInsertId()
+  	fmt.Printf("insertID: %v\n", insertID)
+  }
+  ```
+
+- 查询数据
+
+  ```go
+  type User struct {
+  	id       int
+  	username string
+  	password string
+  }
+  
+  // 查询单行数据
+  func queryOneRow(id int) {
+  	s := "select * from user_tbl where id = ?"
+  	var u User
+  	err := db.QueryRow(s, id).Scan(&u.id, &u.username, &u.password)
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  	} else {
+  		fmt.Printf("u: %v\n", u)
+  	}
+  }
+  
+  // 查询多行数据
+  func queryManyRow() {
+  	s := "select * from user_tbl"
+  	rows, err := db.Query(s)
+  	var u User
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  		return
+  	} else {
+  		for rows.Next() {
+  			rows.Scan(&u.id, &u.username, &u.password)
+  			fmt.Printf("u: %v\n", u)
+  		}
+  	}
+  }
+  ```
+
+- 更新数据
+
+  ```go
+  // 更新数据
+  func updateData(username, password string, id int) {
+  	s := "update user_tbl set username=?,password=? where id=?"
+  	r, err := db.Exec(s, username, password, id)
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  		return
+  	} else {
+  		i, _ := r.RowsAffected()
+  		fmt.Printf("i: %v\n", i)
+  	}
+  }
+  ```
+
+  
+
 - 1111
