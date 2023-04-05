@@ -1,0 +1,2 @@
+.plist文件替换路径：
+/Library/Input Methods/SogouInput.app/Contents/Resources

@@ -2629,6 +2629,9 @@ func main() {
     
     // 更新数据
   	updateData("王五", "90909", 2)
+    
+    // 删除数据
+  	deleteDate(1)
   }
   ```
 
@@ -2704,6 +2707,25 @@ func main() {
   }
   ```
 
-  
+- 删除数据
+
+  ```go
+  // 删除数据
+  func deleteDate(id int) {
+  	s := "delete from user_tbl where id=?"
+  	r, err := db.Exec(s, id)
+  	if err != nil {
+  		fmt.Printf("err: %v\n", err)
+  		return
+  	} else {
+  		i, _ := r.RowsAffected()
+  		fmt.Printf("删除成功 =>>>i: %v\n", i)
+  	}
+  }
+  ```
+
+- 111
+
+## 操作MongoDB数据库
 
 - 1111
