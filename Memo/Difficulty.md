@@ -48,6 +48,9 @@
   }
   ```
 
-  
 
-### 111
+### vuedraggable
+
+- 对一个盒子使用 `vue-draggable`时，其盒子自身的拖拽等事件被禁止，使用disabled禁止拖拽后，事件仍然禁止，源码中的配置了`preventOnFilter=true`，将其关闭即可。
+
+### 11111
