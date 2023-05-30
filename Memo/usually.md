@@ -15,4 +15,17 @@ git push -u origin main
 open -n /Applications/WeChat.app
 ```
 
-### 1111
+### 安装volta
+
+```bash
+curl https://get.volta.sh | bash
+
+// 安装node
+volta install node@14
+volta install node@16
+
+// 然后到对应的前端项目根目录
+volta pin node@16
+volta pin yarn@1.22.19
+```
+
